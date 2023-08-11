@@ -2,13 +2,18 @@ import React, { useState } from 'react'
 import {auth}  from '../../firebase'
 import {toast,ToastContainer} from 'react-toastify'
 import "react-toastify/dist/ReactToastify.css"
-
+import { useSelector } from 'react-redux'
+import { useNavigate, Link } from 'react-router-dom'
 
 export const Register = () => {
 
 
     const [email , setemail] = useState('')
+    const navigate = useNavigate()
 
+    useEffect(()=>{
+        if(user&&user.token) navigate("/")
+    },[user])
 
     const handleSubmit = async (e) =>{
 

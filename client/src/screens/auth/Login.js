@@ -6,6 +6,20 @@ import { Button } from 'antd'
 import { GoogleOutlined, MailOutlined } from '@ant-design/icons'
 import { useDispatch , useSelector } from 'react-redux'
 import { useNavigate, Link } from 'react-router-dom'
+import { useNavigate, Link } from 'react-router-dom'
+import axios from 'axios'
+
+
+const createOrUpdateUser = async (authtoken) => {
+  return await axios.post(
+    `${process.env.REACT_APP_API}/create-or-update-user`,{},
+    {
+      headers : {
+        authtoken,
+      }
+    }
+  )
+}
 
 
 export const Login = () => {
@@ -17,6 +31,9 @@ export const Login = () => {
     const dispatch = useDispatch()
     const navigate = useNavigate()
 
+    useEffect(()=>{
+      if(user&&user.token) navigate("/")
+  },[user])
 
     const handleSubmit = async (e) =>{
 
@@ -26,6 +43,9 @@ export const Login = () => {
           const result = await auth.signInWithEmailAndPassword(email, password)
           const {user} = result
           const idTokenResult = await user.getIdTokenResult()
+          createOrUpdateUser(idTokenResult.token)
+          .then((res)=>console.log("create or update res",res))
+          .catch()
 
           dispatch({
             type:"LOGGED_IN_USER",
