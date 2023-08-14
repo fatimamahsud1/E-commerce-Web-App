@@ -8,6 +8,7 @@ import { RegisterComplete } from './screens/auth/RegisterComplete';
 import {Auth} from './firebase'
 import { useDispatch } from 'react-redux';
 import ForgotPassword from '../src/screens/auth/ForgotPassword'
+import { currentUser } from './functions/auth';
 
 const App = () => {
 
@@ -18,12 +19,19 @@ const App = () => {
       if(user){
         const idTokenResult = await user.getIdTokenResult();
         console.log("user" , user);
-        dispatch({
-          type:"LOGGED_IN_USER",
-          payload : {
-            email : user.email,
-            token : idTokenResult.token
-          }
+        currentUser(idTokenResult.token)
+        .then((res)=>{
+          dispatch({
+            type:"LOGGED_IN_USER",
+            payload : {
+              name: res.data.name,
+              email : res.data.email,
+              token : idTokenResult.token,
+              role : res.data.role,
+              _id:res.data._id
+            }, 
+        })
+        .catch(err=>console.log(err))
         })
       }
     })

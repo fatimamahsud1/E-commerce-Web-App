@@ -8,18 +8,8 @@ import { useDispatch , useSelector } from 'react-redux'
 import { useNavigate, Link } from 'react-router-dom'
 import { useNavigate, Link } from 'react-router-dom'
 import axios from 'axios'
+import { createOrUpdateUser } from '../../functions/auth'
 
-
-const createOrUpdateUser = async (authtoken) => {
-  return await axios.post(
-    `${process.env.REACT_APP_API}/create-or-update-user`,{},
-    {
-      headers : {
-        authtoken,
-      }
-    }
-  )
-}
 
 
 export const Login = () => {
@@ -44,15 +34,18 @@ export const Login = () => {
           const {user} = result
           const idTokenResult = await user.getIdTokenResult()
           createOrUpdateUser(idTokenResult.token)
-          .then((res)=>console.log("create or update res",res))
+          .then((res)=>{
+            dispatch({
+              type:"LOGGED_IN_USER",
+              payload : {
+                name: res.data.name,
+                email : res.data.email,
+                token : idTokenResult.token,
+                role : res.data.role,
+                _id:res.data._id
+              }, 
+          })
           .catch()
-
-          dispatch({
-            type:"LOGGED_IN_USER",
-            payload : {
-              email : user.email,
-              token : idTokenResult.token
-            },
 
           });
           navigate('/')
@@ -103,21 +96,25 @@ export const Login = () => {
               Login With Email/Password
 
             </Button>
-
-        </form>
-
-
+    </form>
     const googleLogin = async = () => {
       auth.signInWithPopup(googleAuthProvider).then(async (result) => {
         const {user} = result;
         const idTokenResult = await user.getIdTokenResult()
-        dispatch({
-          type:"LOGGED_IN_USER",
-          payload : {
-            email : user.email,
-            token : idTokenResult.token
-          },
-
+        createOrUpdateUser(idTokenResult.token)
+        .then((res)=>{
+          dispatch({
+            type:"LOGGED_IN_USER",
+            payload : {
+              name: res.data.name,
+              email : res.data.email,
+              token : idTokenResult.token,
+              role : res.data.role,
+              _id:res.data._id
+            }, 
+        })
+        .catch()
+        
         });
         navigate('/')
       })

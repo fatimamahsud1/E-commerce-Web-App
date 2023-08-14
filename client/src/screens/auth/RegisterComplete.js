@@ -3,15 +3,18 @@ import {useNavigate} from 'react-router-dom';
 import {auth}  from '../../firebase'
 import {toast,ToastContainer} from 'react-toastify'
 import "react-toastify/dist/ReactToastify.css"
+import { useDispatch , useSelector } from 'react-redux'
+import axios from 'axios'
+import { createOrUpdateUser } from '../../functions/auth'
 
 
+  
 export const RegisterComplete = () => {
-
 
     const [email , setemail] = useState('')
     const [password , setpassword] = useState('')
     const navigate = useNavigate(); 
-
+    const dispatch = useDispatch()
 
     useEffect(()=>{
 
@@ -41,14 +44,27 @@ export const RegisterComplete = () => {
                 let user = auth.currentUser 
                 await user.updatePassword(password)
                 const idTokenResult = await user.getIdTokenResult()
+                createOrUpdateUser(idTokenResult.token)
+                .then((res)=>{
+                  dispatch({
+                    type:"LOGGED_IN_USER",
+                    payload : {
+                      name: res.data.name,
+                      email : res.data.email,
+                      token : idTokenResult.token,
+                      role : res.data.role,
+                      _id:res.data._id
+                    }, 
+                })
+                .catch()
 
                 navigate('/')
 
                 
             }
-        }
+        )}
 
-        
+    }
         catch{
 
             console.log(error)
