@@ -21,9 +21,19 @@ export const Login = () => {
     const dispatch = useDispatch()
     const navigate = useNavigate()
 
+    const roleBasedRedirect = (res) => {
+
+      if(res.data.role === "admin"){
+        navigate("/admin/dashboard")
+      }
+      else{
+        navigate("/user/history")
+      }
+    }
+
     useEffect(()=>{
       if(user&&user.token) navigate("/")
-  },[user])
+  },[user, navigate])
 
     const handleSubmit = async (e) =>{
 
@@ -45,10 +55,10 @@ export const Login = () => {
                 _id:res.data._id
               }, 
           })
+          roleBasedRedirect(res)
           .catch()
 
           });
-          navigate('/')
         }
         catch(error){
 
@@ -113,10 +123,10 @@ export const Login = () => {
               _id:res.data._id
             }, 
         })
+        roleBasedRedirect(res)
         .catch()
         
         });
-        navigate('/')
       })
     }
 

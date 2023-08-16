@@ -9,6 +9,12 @@ import {Auth} from './firebase'
 import { useDispatch } from 'react-redux';
 import ForgotPassword from '../src/screens/auth/ForgotPassword'
 import { currentUser } from './functions/auth';
+import { History } from './screens/user/History';
+import UserRoute from './components/routes/UserRoute';
+import { Password } from './screens/user/Password';
+import { Wishlist } from './screens/user/Wishlist';
+import  {AdminDashboard}  from './screens/admin/AdminDashboard';
+import AdminRoute from './components/routes/AdminRoute';
 
 const App = () => {
 
@@ -48,6 +54,13 @@ const App = () => {
       <Route path = '/register' Component={Register}/>
       <Route path = '/register/complete' Component={RegisterComplete}/>
       <Route path = '/forgot/password' Component={ForgotPassword}/>
+      <UserRoute path = '/user/history' Component={History}/>
+      <UserRoute path = '/user/password' Component={Password}/>
+      <UserRoute path = '/user/wishlist' Component={Wishlist}/>
+      <AdminRoute path = '/admin/dashboard' Component={AdminDashboard}/>
+
+
+
 
 
     </Routes>

@@ -19,7 +19,7 @@ export const RegisterComplete = () => {
     useEffect(()=>{
 
         setemail(window.localStorage.getItem("emailForRegistration"))
-    },[])
+    },[navigate])
 
     const handleSubmit = async (e) =>{
 
